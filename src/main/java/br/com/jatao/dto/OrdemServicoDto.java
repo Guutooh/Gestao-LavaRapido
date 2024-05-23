@@ -2,13 +2,14 @@ package br.com.jatao.dto;
 
 import br.com.jatao.enums.Adicionais;
 import br.com.jatao.enums.Lavagem;
-import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Data
-public class OrdemDto implements Serializable {
+public class OrdemServicoDto implements Serializable {
 
     private Long id;
 

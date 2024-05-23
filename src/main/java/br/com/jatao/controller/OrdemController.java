@@ -1,13 +1,16 @@
 package br.com.jatao.controller;
 
-import br.com.jatao.dto.OrdemDto;
+import br.com.jatao.dto.OrdemServicoDto;
 import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.exception.OrdemNaoCriadaException;
 import br.com.jatao.service.OrdemService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/ordem")
@@ -17,24 +20,54 @@ public class OrdemController {
     OrdemService service;
 
     @PostMapping()
-    public ResponseEntity<?> CadastrarOrdem(@RequestBody OrdemDto ordemDto) {
-        try{
+    public ResponseEntity<?> CadastrarOrdem(@RequestBody OrdemServicoDto ordemServicoDto) {
+        try {
 
-        return ResponseEntity.status(HttpStatus.OK).body(service.CriarOdem(ordemDto));
-        }catch(OrdemNaoCriadaException e){
+            return ResponseEntity.status(HttpStatus.OK).body(service.CriarOdem(ordemServicoDto));
+        } catch (OrdemNaoCriadaException e) {
             throw new OrdemNaoCriadaException(e.getMessage());
         }
     }
 
-    @GetMapping("{placa}")
+    @GetMapping("/{placa}")
     public ResponseEntity<?> ConsultarOrdem(@PathVariable String placa) {
-        try{
+        try {
 
-        return ResponseEntity.status(HttpStatus.OK).body(service.ConsultarOdem(placa));
-        }catch(ObjetoNaoEncontradoException e){
+            return ResponseEntity.status(HttpStatus.OK).body(service.consultarOdem(placa));
+        } catch (ObjetoNaoEncontradoException e) {
             throw new ObjetoNaoEncontradoException(e.getMessage());
         }
     }
 
+    @GetMapping()
+    public ResponseEntity<List<OrdemServicoDto>> ListarOrdens() {
+
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(service.listarOrdensServico());
+
+        } catch (ObjetoNaoEncontradoException e) {
+
+            throw new ObjetoNaoEncontradoException(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{placa}")
+    @Transactional
+    public ResponseEntity<?> deletarOrdem(@PathVariable String placa) {
+        try {
+            service.deletarOrdem(placa);
+            return ResponseEntity.ok().body("Ordem deletado com sucesso!");
+        } catch (ObjetoNaoEncontradoException e) {
+            throw new ObjetoNaoEncontradoException(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{placa}")
+    @Transactional
+    public ResponseEntity<OrdemServicoDto> atualizarOrdem(@PathVariable String placa,
+                                                          @RequestBody OrdemServicoDto ordemServicoDto) {
+
+        return service.atualizacaoOrdemServico(placa, ordemServicoDto);
+    }
 
 }
