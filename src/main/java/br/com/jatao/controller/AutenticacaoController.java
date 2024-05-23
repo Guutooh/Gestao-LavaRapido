@@ -3,7 +3,7 @@ package br.com.jatao.controller;
 import br.com.jatao.Security.DadosTokenJWT;
 import br.com.jatao.Security.TokenService;
 import br.com.jatao.dto.UsuarioDto;
-import br.com.jatao.model.User;
+import br.com.jatao.model.UserModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +31,7 @@ public class AutenticacaoController {
 
         var authentication = manager.authenticate(authenticationToken);
 
-        var tokenJWT = tokenService.gerarToken((User) authentication.getPrincipal());
+        var tokenJWT = tokenService.gerarToken((UserModel) authentication.getPrincipal());
 
         return ResponseEntity.ok(new DadosTokenJWT(tokenJWT));
     }

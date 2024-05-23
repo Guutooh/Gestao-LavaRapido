@@ -1,6 +1,6 @@
 package br.com.jatao.Security;
 
-import br.com.jatao.model.User;
+import br.com.jatao.model.UserModel;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -19,7 +19,7 @@ public class TokenService {
     private String secret;
 
 
-    public String gerarToken(User usuario) {
+    public String gerarToken(UserModel usuario) {
         try {
             var algoritmo = Algorithm.HMAC256(secret);
             return JWT.create()
