@@ -1,10 +1,11 @@
 package br.com.jatao.service;
 
-import br.com.jatao.model.Ordem;
+import br.com.jatao.dto.OrdemDto;
+import br.com.jatao.model.OrdemServico;
 import br.com.jatao.repository.CarroRepository;
 import br.com.jatao.repository.ClienteRepository;
 import br.com.jatao.repository.OrdemRepository;
-import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,26 +23,46 @@ public class OrdemService {
     @Autowired
     ClienteRepository clienteRepository;
 
-    @Transactional
-    public Ordem CriarOdem(Ordem ordem) {
+    @Autowired
+    private ModelMapper mapper;
 
-        // Salvar o carro se ainda não estiver salvo
-        if (ordem.getCarro().getId() == null) {
-            carroRepository.save(ordem.getCarro());
+    public OrdemDto CriarOdem(OrdemDto ordemDto) {
+
+        var ordemModel = mapper.map(ordemDto, OrdemServico.class);
+
+        // Verificar e salvar carro se necessário
+        if (ordemModel.getCarro().getId() == null) {
+
+            carroRepository.save(ordemModel.getCarro());
         }
 
-        // Salvar o cliente se ainda não estiver salvo
-        if (ordem.getCliente().getId() == null) {
-            clienteRepository.save(ordem.getCliente());
+        // Verificar e salvar cliente se necessário
+        if (ordemModel.getCliente().getId() == null) {
+            clienteRepository.save(ordemModel.getCliente());
         }
 
-            return ordemRepository.save(ordem);
+        ordemRepository.save(ordemModel);
+
+        // Mapear ordemModel de volta para ordemDto
+        return mapper.map(ordemModel, OrdemDto.class);
+
     }
 
     public ResponseEntity<?> ConsultarOdem(String placa) {
 
-
-
-        return ResponseEntity.status(HttpStatus.OK).body(ordemRepository.ConsultarOrdem(placa));
+        return ResponseEntity.status(HttpStatus.OK).body(getOrdemServico(placa));
     }
+
+    private OrdemServico getOrdemServico(String placa) {
+
+        OrdemServico ordem = ordemRepository.ConsultarOrdem(placa);
+
+        if (ordem == null) {
+            throw new RuntimeException(String.format("Placa: %s, não foi encontrada ", placa));
+        }
+
+        return ordem;
+
+    }
+
 }

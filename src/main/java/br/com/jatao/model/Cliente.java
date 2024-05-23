@@ -1,5 +1,6 @@
 package br.com.jatao.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,6 +12,7 @@ import java.io.Serializable;
 
 @Entity
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Cliente implements Serializable {
 
     @Serial
