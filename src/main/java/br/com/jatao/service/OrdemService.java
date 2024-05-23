@@ -1,6 +1,7 @@
 package br.com.jatao.service;
 
 import br.com.jatao.dto.OrdemDto;
+import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.model.OrdemServico;
 import br.com.jatao.repository.CarroRepository;
 import br.com.jatao.repository.ClienteRepository;
@@ -50,19 +51,15 @@ public class OrdemService {
 
     public ResponseEntity<?> ConsultarOdem(String placa) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(getOrdemServico(placa));
+
+        return ResponseEntity.status(HttpStatus.OK).body(buscarOuFalhar(placa));
     }
 
-    private OrdemServico getOrdemServico(String placa) {
 
-        OrdemServico ordem = ordemRepository.ConsultarOrdem(placa);
-
-        if (ordem == null) {
-            throw new RuntimeException(String.format("Placa: %s, não foi encontrada ", placa));
-        }
-
-        return ordem;
-
+    public OrdemServico buscarOuFalhar(String placa) {
+        return ordemRepository.findByCarroPlaca(placa)
+                .orElseThrow(() -> new ObjetoNaoEncontradoException(String.format("Placa: %s, não foi encontrada ", placa)));
     }
+
 
 }
