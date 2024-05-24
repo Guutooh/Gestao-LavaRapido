@@ -6,7 +6,7 @@ CREATE TABLE Usuarios (
 
 
 
-INSERT INTO Usuarios (email, password) VALUES ('teste@teste.com.br', '123');
+INSERT INTO Usuarios (email, password) VALUES ('teste@teste.com.br', '$2a$10$H/qfml4KFzjjy.ZGxwQ4j.hDW/Wkrgjsoox1khFHFS5qrw9E1Dkx.');
 
 
 -- Tabela Carro

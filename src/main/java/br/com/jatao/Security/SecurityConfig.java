@@ -3,6 +3,7 @@ package br.com.jatao.Security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,7 +27,10 @@ public class SecurityConfig {
                 csrf.disable()
                         .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                         .authorizeHttpRequests(auth -> {
+                            auth.requestMatchers("/login").permitAll();
+                            auth.requestMatchers("/login/validarToken").permitAll();
                             auth.requestMatchers("/h2/**").permitAll();
+                            auth.requestMatchers("/swagger-ui/**","/v3/api-docs/","/swagger-ui.html").permitAll();
                             auth.anyRequest().authenticated();
 
 

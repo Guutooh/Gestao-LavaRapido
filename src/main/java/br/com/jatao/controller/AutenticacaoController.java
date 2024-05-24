@@ -37,4 +37,10 @@ public class AutenticacaoController {
     }
 
 
+    @PostMapping("/validarToken")
+    public ResponseEntity<Boolean> validarToken(@RequestBody String token) {
+        boolean isValid = tokenService.isTokenValid(token);
+        return ResponseEntity.ok(isValid);
+    }
+
 }

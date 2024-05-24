@@ -23,7 +23,7 @@ public class TokenService {
         try {
             var algoritmo = Algorithm.HMAC256(secret);
             return JWT.create()
-                    .withIssuer("API Missao.Andromeda")
+                    .withIssuer("Gestao Lava Rapido")
                     .withSubject(usuario.getEmail())
                     .withExpiresAt(dataExpiracaoToken())
                     .sign(algoritmo);
@@ -37,12 +37,25 @@ public class TokenService {
         try {
             var algoritmo = Algorithm.HMAC256(secret);
             return JWT.require(algoritmo)
-                    .withIssuer("API Missao.Andromeda")
+                    .withIssuer("Gestao Lava Rapido")
                     .build()
                     .verify(tokenJWT)
                     .getSubject();
         } catch (JWTVerificationException exception) {
             throw new RuntimeException("Token JWT inválido ou expirado!");
+        }
+    }
+
+    public boolean isTokenValid(String tokenJWT) {
+        try {
+            var algoritmo = Algorithm.HMAC256(secret);
+            JWT.require(algoritmo)
+                    .withIssuer("Gestao Lava Rapido")
+                    .build()
+                    .verify(tokenJWT);
+            return true;
+        } catch (JWTVerificationException exception) {
+            return false;
         }
     }
 
