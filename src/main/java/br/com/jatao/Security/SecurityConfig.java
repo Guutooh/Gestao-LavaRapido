@@ -30,7 +30,7 @@ public class SecurityConfig {
                             auth.requestMatchers("/login").permitAll();
                             auth.requestMatchers("/login/validarToken").permitAll();
                             auth.requestMatchers("/h2/**").permitAll();
-                            auth.requestMatchers("/swagger-ui/**","/v3/api-docs/","/swagger-ui.html").permitAll();
+                            auth.requestMatchers("/swagger-ui/**","/v3/api-docs/**","/swagger-ui.html").permitAll();
                             auth.anyRequest().authenticated();
 
 
