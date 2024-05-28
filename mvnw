@@ -118,7 +118,7 @@ if [ -z "$JAVACMD" ] ; then
       JAVACMD="$JAVA_HOME/bin/java"
     fi
   else
-    JAVACMD="$(\unset -f command 2>/dev/null; \command -v java)"
+    JAVACMD="$(\unset -f command 2>/dev/NULL; \command -v java)"
   fi
 fi
 
@@ -210,7 +210,7 @@ else
       wrapperJarPath=$(cygpath --path --windows "$wrapperJarPath")
     fi
 
-    if command -v wget > /dev/null; then
+    if command -v wget > /dev/NULL; then
         log "Found wget ... using wget"
         [ "$MVNW_VERBOSE" = true ] && QUIET="" || QUIET="--quiet"
         if [ -z "$MVNW_USERNAME" ] || [ -z "$MVNW_PASSWORD" ]; then
@@ -218,7 +218,7 @@ else
         else
             wget $QUIET --http-user="$MVNW_USERNAME" --http-password="$MVNW_PASSWORD" "$wrapperUrl" -O "$wrapperJarPath" || rm -f "$wrapperJarPath"
         fi
-    elif command -v curl > /dev/null; then
+    elif command -v curl > /dev/NULL; then
         log "Found curl ... using curl"
         [ "$MVNW_VERBOSE" = true ] && QUIET="" || QUIET="--silent"
         if [ -z "$MVNW_USERNAME" ] || [ -z "$MVNW_PASSWORD" ]; then
@@ -259,12 +259,12 @@ while IFS="=" read -r key value; do
 done < "$MAVEN_PROJECTBASEDIR/.mvn/wrapper/maven-wrapper.properties"
 if [ -n "$wrapperSha256Sum" ]; then
   wrapperSha256Result=false
-  if command -v sha256sum > /dev/null; then
-    if echo "$wrapperSha256Sum  $wrapperJarPath" | sha256sum -c > /dev/null 2>&1; then
+  if command -v sha256sum > /dev/NULL; then
+    if echo "$wrapperSha256Sum  $wrapperJarPath" | sha256sum -c > /dev/NULL 2>&1; then
       wrapperSha256Result=true
     fi
-  elif command -v shasum > /dev/null; then
-    if echo "$wrapperSha256Sum  $wrapperJarPath" | shasum -a 256 -c > /dev/null 2>&1; then
+  elif command -v shasum > /dev/NULL; then
+    if echo "$wrapperSha256Sum  $wrapperJarPath" | shasum -a 256 -c > /dev/NULL 2>&1; then
       wrapperSha256Result=true
     fi
   else

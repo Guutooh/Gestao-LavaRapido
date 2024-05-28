@@ -6,6 +6,10 @@ import br.com.jatao.exception.OrdemNaoCriadaException;
 import br.com.jatao.service.OrdemService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,10 +44,11 @@ public class OrdemController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<OrdemServicoDto>> ListarOrdens() {
+    public ResponseEntity<Page<OrdemServicoDto>> ListarOrdens( @PageableDefault(page = 0, size = 10, sort = "id",
+            direction = Sort.Direction.ASC) Pageable paginacao) {
 
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(service.listarOrdensServico());
+            return ResponseEntity.status(HttpStatus.OK).body(service.listarOrdensServico(paginacao));
 
         } catch (ObjetoNaoEncontradoException e) {
 

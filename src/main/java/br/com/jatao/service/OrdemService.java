@@ -2,20 +2,21 @@ package br.com.jatao.service;
 
 import br.com.jatao.dto.OrdemServicoDto;
 import br.com.jatao.exception.ObjetoNaoEncontradoException;
-import br.com.jatao.model.Carro;
-import br.com.jatao.model.Cliente;
 import br.com.jatao.model.OrdemServico;
 import br.com.jatao.repository.CarroRepository;
 import br.com.jatao.repository.ClienteRepository;
 import br.com.jatao.repository.OrdemRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,20 +62,20 @@ public class OrdemService {
     }
 
 
-    public List<OrdemServicoDto> listarOrdensServico() {
+    public Page<OrdemServicoDto> listarOrdensServico(@PageableDefault(page = 0, size = 10, sort = "id",
+            direction = Sort.Direction.ASC) Pageable paginacao) {
 
         try {
-            List<OrdemServico> ordens = ordemRepository.findAll();
+            Page<OrdemServico> ordens = ordemRepository.findAll(paginacao);
 
+            return ordens.map(ordemServico -> mapper.map(ordemServico, OrdemServicoDto.class));
 
-            return ordens.stream()
-                    .map(ordemServico -> mapper.map(ordemServico, OrdemServicoDto.class))
-                    .collect(Collectors.toList());
         } catch (ObjetoNaoEncontradoException e) {
             throw new ObjetoNaoEncontradoException(e.getMessage());
         }
 
     }
+
     public void deletarOrdem(String placa) {
 
         OrdemServico ordem = localizarPlaca(placa);
@@ -90,13 +91,6 @@ public class OrdemService {
 
         mapper.map(ordemServicoDto, ordemExistente);
 
-//        Carro carro = ordemExistente.getCarro();
-//        Cliente cliente = ordemExistente.getCliente();
-
-//        ordemExistente.setCarro(carro);
-//        ordemExistente.setCliente(cliente);
-
-
         ordemRepository.save(ordemExistente);
 
         OrdemServicoDto dtoAtualizado = mapper.map(ordemExistente, OrdemServicoDto.class);
@@ -106,11 +100,11 @@ public class OrdemService {
 
     }
 
-
-
     public OrdemServico localizarPlaca(String placa) {
         return ordemRepository.findByCarroPlaca(placa)
                 .orElseThrow(() -> new ObjetoNaoEncontradoException(String.format("Placa: %s, não foi encontrada ", placa)));
     }
+
+
 
 }
