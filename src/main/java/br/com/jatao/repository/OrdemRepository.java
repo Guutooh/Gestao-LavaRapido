@@ -9,19 +9,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
 public interface OrdemRepository extends JpaRepository<OrdemServico, Long>, PagingAndSortingRepository<OrdemServico, Long> {
 
 
     @Modifying
     @Query("DELETE FROM OrdemServico o WHERE o.carro.placa = :placa")
-    void deleteByCarroPlaca(String placa);
+    void deleteByCarroPlaca(Long placa);
 
 
     Page<OrdemServico> findAll(  Pageable paginacao);
 
 
-    Optional<OrdemServico> findByCarroPlaca(String placa);
+    Page<OrdemServico> findByCarroPlacaContainingIgnoreCase(String placa, Pageable pageable);
 }

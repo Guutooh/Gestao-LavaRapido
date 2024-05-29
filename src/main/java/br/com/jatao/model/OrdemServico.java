@@ -32,8 +32,12 @@ public class OrdemServico implements Serializable {
     @OneToOne
     private Carro carro;
 
-    @Enumerated(EnumType.STRING)
-    private Lavagem lavagem;
+//    @Enumerated(EnumType.STRING)
+//    private Lavagem lavagem;
+
+
+    @OneToOne
+    private Servico servico;
 
     @Enumerated(EnumType.STRING)
     private Adicionais adicionais;
