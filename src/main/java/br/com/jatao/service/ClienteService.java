@@ -1,10 +1,8 @@
 package br.com.jatao.service;
 
 import br.com.jatao.dto.ClienteDto;
-import br.com.jatao.dto.OrdemServicoDto;
 import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.model.Cliente;
-import br.com.jatao.model.OrdemServico;
 import br.com.jatao.repository.ClienteRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -53,7 +51,7 @@ public class ClienteService {
 
     public void deletarCliente(Long id) {
 
-        localizarId(id);
+        buscarId(id);
         clienteRepository.deleteById(id);
 
     }
@@ -74,7 +72,7 @@ public class ClienteService {
 
 
 
-    public Cliente localizarId(Long id) {
+    public Cliente buscarId(Long id) {
         return clienteRepository.findById(id)
                 .orElseThrow(() -> new ObjetoNaoEncontradoException(String.format("Id: %d, não foi encontrada ", id)));
     }

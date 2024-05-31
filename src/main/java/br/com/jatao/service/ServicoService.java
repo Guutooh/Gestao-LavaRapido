@@ -6,22 +6,22 @@ import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.exception.OrdemNaoCriadaException;
 import br.com.jatao.model.Servico;
 import br.com.jatao.repository.ServicoRepository;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 @Service
 public class ServicoService {
 
-    @Autowired
-    ServicoRepository servicoRepository;
 
-    @Autowired
+    private ServicoRepository servicoRepository;
     private ModelMapper mapper;
+
 
     public OrdemServicoDto criarServico(@RequestBody ServicoDto servicoDto) {
         try {
@@ -32,16 +32,19 @@ public class ServicoService {
         }
     }
 
-    public List<ServicoDto> allServicos() {
+    public List<ServicoDto> todosServicos() {
+
         try {
+
             List<Servico> servicos = servicoRepository.findAll();
-            if (servicos.isEmpty()) {
-            }
+
             return servicos.stream()
                     .map(servico -> mapper.map(servico, ServicoDto.class))
                     .collect(Collectors.toList());
-        } catch (Exception e) {
-            throw new ObjetoNaoEncontradoException("Erro ao buscar serviços: " + e.getMessage());
+
+        } catch (ObjetoNaoEncontradoException e) {
+
+            throw new ObjetoNaoEncontradoException("Não foi encontrados serviços: " + e.getMessage());
         }
     }
 

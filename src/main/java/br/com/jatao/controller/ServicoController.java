@@ -33,13 +33,21 @@ public class ServicoController {
 
     @GetMapping()
     public ResponseEntity<List<ServicoDto>> consultarOrdem() {
+
         try {
-            List<ServicoDto> servicos = service.allServicos();
+
+            List<ServicoDto> servicos = service.todosServicos();
+
             return ResponseEntity.status(HttpStatus.OK).body(servicos);
+
         } catch (ObjetoNaoEncontradoException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
+            return ResponseEntity.notFound().build();
+
         } catch (Exception e) {
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+
         }
     }
 

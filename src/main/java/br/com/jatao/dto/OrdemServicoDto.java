@@ -13,7 +13,7 @@ public class OrdemServicoDto implements Serializable {
 
     private CarroDto carro;
 
-    private ServicoDto lavagem;
+    private ServicoDto servico;
 
     private Adicionais adicionais;
 

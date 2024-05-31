@@ -1,11 +1,9 @@
 package br.com.jatao.service;
 
 import br.com.jatao.dto.OrdemServicoDto;
-import br.com.jatao.dto.ServicoDto;
 import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.exception.OrdemNaoCriadaException;
-import br.com.jatao.model.Carro;
-import br.com.jatao.model.Cliente;
+import br.com.jatao.exception.ServicoJaCadastradaException;
 import br.com.jatao.model.OrdemServico;
 import br.com.jatao.model.Servico;
 import br.com.jatao.repository.CarroRepository;
@@ -14,7 +12,6 @@ import br.com.jatao.repository.OrdemRepository;
 import br.com.jatao.repository.ServicoRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,6 +19,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -44,48 +43,52 @@ public class OrdemDeServicosService {
 
     public OrdemServicoDto CriarOdem(OrdemServicoDto ordemServicoDto) {
 
+
         try {
 
+            // Mapear o DTO para a entidade OrdemServico
             OrdemServico ordemModel = mapper.map(ordemServicoDto, OrdemServico.class);
 
-            ordemModel.setServico(mapper.map(ordemServicoDto.getLavagem(), Servico.class));
-            ordemModel.setCarro(mapper.map(ordemServicoDto.getCarro(), Carro.class));
-            ordemModel.setCliente(mapper.map(ordemServicoDto.getCliente(), Cliente.class));
+            // Verificar e salvar carro se necessário
+            if (ordemModel.getCarro().getId() == null) {
+                carroRepository.save(ordemModel.getCarro());
+            }
 
+            // Verificar e salvar cliente se necessário
+            if (ordemModel.getCliente().getId() == null || clienteService.buscarId(ordemModel.getCliente().getId()) == null) {
+                clienteRepository.save(ordemModel.getCliente());
+            }
 
+            //verifica os serviços existeste e salva se necessário
+            if (ordemModel.getServico() != null && ordemModel.getServico().getId() == null && ordemModel.getServico().getNomeServico() != null) {
 
-//             Verificar e salvar carro se necessário
-//            if (ordemModel.getCarro().getId() == null) {
-               var car = carroRepository.save(ordemModel.getCarro());
-                ordemModel.getCarro().setId(car.getId());
-//            }
+                var nomeServico = ordemModel.getServico().getNomeServico();
 
-//            if (
-//                    servicoService.allServicos().stream().noneMatch(servico ->
-//                            ordemModel.getServico().getNomeServico().equalsIgnoreCase(servico.getNomeServico()))) {
+                Optional<Servico> servicoExistenteOptional = servicoRepository.findByNomeServicoIgnoreCase(nomeServico);
 
+                if (servicoExistenteOptional.isPresent()) {
+                    throw new ServicoJaCadastradaException("Já existe um serviço com mesmo nome cadastrado no " +
+                            "sistema.");
+                }else {
 
+                Servico servicoExistente = servicoService.todosServicos().stream()
+                        .filter(servicoDto -> nomeServico.equalsIgnoreCase(servicoDto.getNomeServico()))
+                        .map(servicoDto -> mapper.map(servicoDto, Servico.class))
+                        .findFirst()
+                        .orElseGet(() -> servicoRepository.save(mapper.map(ordemModel.getServico(), Servico.class)));
 
-
-                 var ss = servicoService.criarServico(mapper.map(ordemModel.getServico(), ServicoDto.class));
-                  ordemModel.getServico().setId(ss.getId());
-//            }
-
-
-
-//            // Verificar e salvar cliente se necessário
-//            if (ordemModel.getCliente().getId() == null || !clienteRepository.existsById(ordemModel.getCliente().getId())) {
-               var c = clienteRepository.save(ordemModel.getCliente());
-                ordemModel.getCliente().setId(c.getId());
-//            }
-
+                // Associar o serviço à ordem de serviço antes de salvar
+                ordemModel.setServico(servicoExistente);
+                }
+            }
+            // Salvar a ordem de serviço criado
             ordemRepository.save(ordemModel);
 
-
-            // Mapear ordemModel de volta para ordemDto
+            // Mapear a ordem de serviço salva de volta para o DTO
             return mapper.map(ordemModel, OrdemServicoDto.class);
+
         } catch (OrdemNaoCriadaException e) {
-            throw new OrdemNaoCriadaException("Não foi possivel criar o ordem de servico" + e.getMessage());
+            throw new OrdemNaoCriadaException("Ordem não criada.");
         }
 
     }
@@ -101,7 +104,6 @@ public class OrdemDeServicosService {
         } catch (ObjetoNaoEncontradoException e) {
             throw new ObjetoNaoEncontradoException(e.getMessage());
         }
-
     }
 
     public void deletarOrdem(Long id) {
@@ -110,7 +112,6 @@ public class OrdemDeServicosService {
 
         ordemRepository.deleteByCarroPlaca(id);
     }
-
 
     public ResponseEntity<OrdemServicoDto> atualizacaoOrdemServico(Long id, OrdemServicoDto ordemServicoDto) {
 
@@ -123,9 +124,8 @@ public class OrdemDeServicosService {
         OrdemServicoDto dtoAtualizado = mapper.map(ordemExistente, OrdemServicoDto.class);
 
         return ResponseEntity.status(HttpStatus.OK).body(dtoAtualizado);
-
-
     }
+
 
     public OrdemServico localizarId(Long id) {
         return ordemRepository.findById(id)
