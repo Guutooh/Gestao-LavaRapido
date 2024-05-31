@@ -14,7 +14,6 @@ import br.com.jatao.repository.OrdemRepository;
 import br.com.jatao.repository.ServicoRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
