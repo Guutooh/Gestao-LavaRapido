@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClienteService {
 
-
     private ModelMapper mapper;
 
     private ClienteRepository clienteRepository;
@@ -45,8 +44,6 @@ public class ClienteService {
         } catch (ObjetoNaoEncontradoException e) {
             throw new ObjetoNaoEncontradoException(e.getMessage());
         }
-
-
     }
 
     public void deletarCliente(Long id) {
@@ -68,8 +65,6 @@ public class ClienteService {
         }
 
     }
-
-
 
 
     public Cliente buscarId(Long id) {

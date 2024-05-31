@@ -58,32 +58,45 @@ public class OrdemDeServicosService {
                 clienteRepository.save(ordemModel.getCliente());
             }
 
-            //verifica os serviços existeste e salva se necessário
-            if (ordemModel.getServico() != null && ordemModel.getServico().getId() == null && ordemModel.getServico().getNomeServico() != null) {
-
+            // Verificar e salvar serviço se necessário
+            if (ordemModel.getServico() != null) {
                 var nomeServico = ordemModel.getServico().getNomeServico();
-                Optional<Servico> servicoExistenteOptional = servicoRepository.findByNomeServicoIgnoreCase(nomeServico);
+                Optional<Servico> servicoExistenteOptional = servicoRepository.findFirstByNomeServicoIgnoreCase(nomeServico);
 
-
-                if (servicoExistenteOptional.isPresent()) {
-                    throw new ServicoJaCadastradaException("Já existe um serviço com mesmo nome cadastrado no " +
-                            "sistema.");
-                }else {
-
-                Servico servicoExistente = servicoService.todosServicos().stream()
-                        .filter(servicoDto -> nomeServico.equalsIgnoreCase(servicoDto.getNomeServico()))
-                        .map(servicoDto -> mapper.map(servicoDto, Servico.class))
-                        .findFirst()
-                        .orElseGet(() -> servicoRepository.save(mapper.map(ordemModel.getServico(), Servico.class)));
-
-                // Associar o serviço à ordem de serviço antes de salvar
-                ordemModel.setServico(servicoExistente);
-                }
+                servicoExistenteOptional.ifPresentOrElse(
+                        servico -> {
+                            ordemModel.getServico().setNomeServico(servico.getNomeServico());
+                            ordemModel.getServico().setValor(servico.getValor());
+                            servicoRepository.save(ordemModel.getServico());
+                        },
+                        () -> ordemModel.setServico(servicoRepository.save(ordemModel.getServico()))
+                );
             }
-            // Salvar a ordem de serviço criado
+
+//            //verifica os serviços existeste e salva se necessário
+//            if (ordemModel.getServico() != null ) {
+//
+//                var nomeServico = ordemModel.getServico().getNomeServico();
+//
+//                Optional<Servico> servicoExistenteOptional =
+//                       servicoRepository.findFirstByNomeServicoIgnoreCase(nomeServico);
+//
+//                if (servicoExistenteOptional.isPresent()) {
+//
+//                    Servico servico = servicoExistenteOptional.get();
+//
+//                    ordemModel.getServico().setNomeServico(servico.getNomeServico());
+//                    ordemModel.getServico().setValor(servico.getValor());
+//
+//                    servicoRepository.save(ordemModel.getServico());
+
+//                } else {
+//                    ordemModel.setServico(servicoRepository.save(ordemModel.getServico()));
+//                }
+//            }
+
             ordemRepository.save(ordemModel);
 
-            // Mapear a ordem de serviço salva de volta para o DTO
             return mapper.map(ordemModel, OrdemDeServicoDto.class);
 
         } catch (OrdemNaoCriadaException e) {

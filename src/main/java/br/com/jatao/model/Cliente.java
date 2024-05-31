@@ -26,25 +26,25 @@ public class Cliente implements Serializable {
 
     private String celular;
 
-    private String email;
-
-    private String cpf;
-
-    private String pais = "Brasil";
-
-    private boolean statusCadastro = true;
-
-    /*
-    Montar classe de endereço e mudar para EBBEDABLE
-     */
-
-    private String endereco; // MUDAR PARA EBBEDABLE
-
-    private String cidade;
-
-    private String estado;
-
-    private String cep; // montar API
+//    private String email;
+//
+//    private String cpf;
+//
+//    private String pais = "Brasil";
+//
+//    private boolean statusCadastro = true;
+//
+//    /*
+//    Montar classe de endereço e mudar para EBBEDABLE
+//     */
+//
+//    private String endereco; // MUDAR PARA EBBEDABLE
+//
+//    private String cidade;
+//
+//    private String estado;
+//
+//    private String cep; // montar API
 
 
 

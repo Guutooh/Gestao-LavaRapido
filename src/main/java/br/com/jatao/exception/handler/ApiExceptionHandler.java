@@ -29,32 +29,32 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
-
-    //capturar todas exceções não tratadas
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
-
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        ProblemType problemType = ProblemType.ERRO_DE_SISTEMA;
-        String detail = "Ocorreu um erro interno inesperado no sistema. "
-                + "Tente novamente e se o problema persistir, entre em contato "
-                + "com o administrador do sistema.";
-
-
-        LocalDateTime hora = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        String formattedHora = hora.format(formatter);
-
-        Problem problem = Problem.builder()
-                .status(status.value())
-                .type(problemType.getUri())
-                .title(problemType.getTitle())
-                .detail(detail)
-                .hora(hora)
-                .build();
-
-        return ResponseEntity.status(status).body(problem);
-    }
+//
+//    //capturar todas exceções não tratadas
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
+//
+//        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+//        ProblemType problemType = ProblemType.ERRO_DE_SISTEMA;
+//        String detail = "Ocorreu um erro interno inesperado no sistema. "
+//                + "Tente novamente e se o problema persistir, entre em contato "
+//                + "com o administrador do sistema.";
+//
+//
+//        LocalDateTime hora = LocalDateTime.now();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+//        String formattedHora = hora.format(formatter);
+//
+//        Problem problem = Problem.builder()
+//                .status(status.value())
+//                .type(problemType.getUri())
+//                .title(problemType.getTitle())
+//                .detail(detail)
+//                .hora(hora)
+//                .build();
+//
+//        return ResponseEntity.status(status).body(problem);
+//    }
 
 
     @ExceptionHandler(ServicoJaCadastradaException.class)
