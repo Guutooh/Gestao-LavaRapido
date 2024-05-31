@@ -1,6 +1,6 @@
 package br.com.jatao.service;
 
-import br.com.jatao.dto.OrdemServicoDto;
+import br.com.jatao.dto.OrdemDeServicoDto;
 import br.com.jatao.dto.ServicoDto;
 import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.exception.OrdemNaoCriadaException;
@@ -23,10 +23,10 @@ public class ServicoService {
     private ModelMapper mapper;
 
 
-    public OrdemServicoDto criarServico(@RequestBody ServicoDto servicoDto) {
+    public OrdemDeServicoDto criarServico(@RequestBody ServicoDto servicoDto) {
         try {
             Servico servico = mapper.map(servicoDto, Servico.class);
-            return mapper.map(servicoRepository.save(servico), OrdemServicoDto.class);
+            return mapper.map(servicoRepository.save(servico), OrdemDeServicoDto.class);
         } catch (Exception e) {
             throw new OrdemNaoCriadaException("Erro ao criar serviço: " + e.getMessage());
         }

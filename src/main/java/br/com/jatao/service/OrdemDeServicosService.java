@@ -1,10 +1,10 @@
 package br.com.jatao.service;
 
-import br.com.jatao.dto.OrdemServicoDto;
+import br.com.jatao.dto.OrdemDeServicoDto;
 import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.exception.OrdemNaoCriadaException;
 import br.com.jatao.exception.ServicoJaCadastradaException;
-import br.com.jatao.model.OrdemServico;
+import br.com.jatao.model.OrdemDeServico;
 import br.com.jatao.model.Servico;
 import br.com.jatao.repository.CarroRepository;
 import br.com.jatao.repository.ClienteRepository;
@@ -41,13 +41,12 @@ public class OrdemDeServicosService {
 
     private ServicoService servicoService;
 
-    public OrdemServicoDto CriarOdem(OrdemServicoDto ordemServicoDto) {
-
+    public OrdemDeServicoDto CriarOdem(OrdemDeServicoDto ordemServicoDto) {
 
         try {
 
             // Mapear o DTO para a entidade OrdemServico
-            OrdemServico ordemModel = mapper.map(ordemServicoDto, OrdemServico.class);
+            OrdemDeServico ordemModel = mapper.map(ordemServicoDto, OrdemDeServico.class);
 
             // Verificar e salvar carro se necessário
             if (ordemModel.getCarro().getId() == null) {
@@ -63,8 +62,8 @@ public class OrdemDeServicosService {
             if (ordemModel.getServico() != null && ordemModel.getServico().getId() == null && ordemModel.getServico().getNomeServico() != null) {
 
                 var nomeServico = ordemModel.getServico().getNomeServico();
-
                 Optional<Servico> servicoExistenteOptional = servicoRepository.findByNomeServicoIgnoreCase(nomeServico);
+
 
                 if (servicoExistenteOptional.isPresent()) {
                     throw new ServicoJaCadastradaException("Já existe um serviço com mesmo nome cadastrado no " +
@@ -85,7 +84,7 @@ public class OrdemDeServicosService {
             ordemRepository.save(ordemModel);
 
             // Mapear a ordem de serviço salva de volta para o DTO
-            return mapper.map(ordemModel, OrdemServicoDto.class);
+            return mapper.map(ordemModel, OrdemDeServicoDto.class);
 
         } catch (OrdemNaoCriadaException e) {
             throw new OrdemNaoCriadaException("Ordem não criada.");
@@ -93,13 +92,13 @@ public class OrdemDeServicosService {
 
     }
 
-    public Page<OrdemServicoDto> listarOrdensServico(@PageableDefault(page = 0, size = 10, sort = "id",
+    public Page<OrdemDeServicoDto> listarOrdensServico(@PageableDefault(page = 0, size = 10, sort = "id",
             direction = Sort.Direction.ASC) Pageable paginacao) {
 
         try {
-            Page<OrdemServico> ordens = ordemRepository.findAll(paginacao);
+            Page<OrdemDeServico> ordens = ordemRepository.findAll(paginacao);
 
-            return ordens.map(ordemServico -> mapper.map(ordemServico, OrdemServicoDto.class));
+            return ordens.map(ordemServico -> mapper.map(ordemServico, OrdemDeServicoDto.class));
 
         } catch (ObjetoNaoEncontradoException e) {
             throw new ObjetoNaoEncontradoException(e.getMessage());
@@ -108,37 +107,37 @@ public class OrdemDeServicosService {
 
     public void deletarOrdem(Long id) {
 
-        OrdemServico ordem = localizarId(id);
+        OrdemDeServico ordem = localizarId(id);
 
         ordemRepository.deleteByCarroPlaca(id);
     }
 
-    public ResponseEntity<OrdemServicoDto> atualizacaoOrdemServico(Long id, OrdemServicoDto ordemServicoDto) {
+    public ResponseEntity<OrdemDeServicoDto> atualizacaoOrdemServico(Long id, OrdemDeServicoDto ordemServicoDto) {
 
-        OrdemServico ordemExistente = ordemRepository.findById(id).get();
+        OrdemDeServico ordemExistente = ordemRepository.findById(id).get();
 
         mapper.map(ordemServicoDto, ordemExistente);
 
         ordemRepository.save(ordemExistente);
 
-        OrdemServicoDto dtoAtualizado = mapper.map(ordemExistente, OrdemServicoDto.class);
+        OrdemDeServicoDto dtoAtualizado = mapper.map(ordemExistente, OrdemDeServicoDto.class);
 
         return ResponseEntity.status(HttpStatus.OK).body(dtoAtualizado);
     }
 
 
-    public OrdemServico localizarId(Long id) {
+    public OrdemDeServico localizarId(Long id) {
         return ordemRepository.findById(id)
                 .orElseThrow(() -> new ObjetoNaoEncontradoException(String.format("Id: %d, não foi encontrada ",
                         id)));
     }
 
-    public Page<OrdemServicoDto> todasOrdensPorPlaca(String placa, Pageable pageable) {
-        Page<OrdemServico> search = ordemRepository.findByCarroPlacaContainingIgnoreCase(placa, pageable);
+    public Page<OrdemDeServicoDto> todasOrdensPorPlaca(String placa, Pageable pageable) {
+        Page<OrdemDeServico> search = ordemRepository.findByCarroPlacaContainingIgnoreCase(placa, pageable);
 
         if (search.isEmpty()) {
             throw new ObjetoNaoEncontradoException(String.format("Placa: %s, não foi encontrada ", placa));
         }
-        return search.map(ordemServico -> mapper.map(ordemServico, OrdemServicoDto.class));
+        return search.map(ordemServico -> mapper.map(ordemServico, OrdemDeServicoDto.class));
     }
 }

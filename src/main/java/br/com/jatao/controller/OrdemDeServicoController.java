@@ -1,6 +1,6 @@
 package br.com.jatao.controller;
 
-import br.com.jatao.dto.OrdemServicoDto;
+import br.com.jatao.dto.OrdemDeServicoDto;
 import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.exception.OrdemNaoCriadaException;
 import br.com.jatao.service.OrdemDeServicosService;
@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/ordem")
-public class OrdemController {
+public class OrdemDeServicoController {
 
     @Autowired
     OrdemDeServicosService service;
 
     @PostMapping()
-    public ResponseEntity<?> CadastrarOrdem(@RequestBody OrdemServicoDto ordemServicoDto) {
+    public ResponseEntity<?> CadastrarOrdem(@RequestBody OrdemDeServicoDto ordemServicoDto) {
         try {
 
             return ResponseEntity.status(HttpStatus.OK).body(service.CriarOdem(ordemServicoDto));
@@ -32,7 +32,7 @@ public class OrdemController {
     }
 
     @GetMapping("/{placa}")
-    public ResponseEntity<Page<OrdemServicoDto>> ConsultarOrdem( @PageableDefault(page = 0, size = 10, sort = "id",
+    public ResponseEntity<Page<OrdemDeServicoDto>> ConsultarOrdem(@PageableDefault(page = 0, size = 10, sort = "id",
             direction = Sort.Direction.ASC) Pageable paginacao, @PathVariable String placa) {
         try {
 
@@ -43,7 +43,7 @@ public class OrdemController {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<OrdemServicoDto>> ListarOrdens( @PageableDefault(page = 0, size = 10, sort = "id",
+    public ResponseEntity<Page<OrdemDeServicoDto>> ListarOrdens(@PageableDefault(page = 0, size = 10, sort = "id",
             direction = Sort.Direction.ASC) Pageable paginacao) {
 
         try {
@@ -69,8 +69,8 @@ public class OrdemController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<OrdemServicoDto> atualizarOrdem(@PathVariable Long id,
-                                                          @RequestBody OrdemServicoDto ordemServicoDto) {
+    public ResponseEntity<OrdemDeServicoDto> atualizarOrdem(@PathVariable Long id,
+                                                            @RequestBody OrdemDeServicoDto ordemServicoDto) {
 
         return service.atualizacaoOrdemServico(id, ordemServicoDto);
     }

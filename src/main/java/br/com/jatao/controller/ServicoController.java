@@ -1,6 +1,6 @@
 package br.com.jatao.controller;
 
-import br.com.jatao.dto.OrdemServicoDto;
+import br.com.jatao.dto.OrdemDeServicoDto;
 import br.com.jatao.dto.ServicoDto;
 import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.exception.OrdemNaoCriadaException;
@@ -22,7 +22,7 @@ public class ServicoController {
     @PostMapping()
     public ResponseEntity<?> cadastrarServico(@RequestBody ServicoDto servicoDto) {
         try {
-            OrdemServicoDto ordemServico = service.criarServico(servicoDto);
+            OrdemDeServicoDto ordemServico = service.criarServico(servicoDto);
             return ResponseEntity.status(HttpStatus.OK).body(ordemServico);
         } catch (OrdemNaoCriadaException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -32,7 +32,7 @@ public class ServicoController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<ServicoDto>> consultarOrdem() {
+    public ResponseEntity<List<ServicoDto>> consultarServicos() {
 
         try {
 

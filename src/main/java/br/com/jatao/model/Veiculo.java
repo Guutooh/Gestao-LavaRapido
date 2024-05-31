@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Entity
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Carro implements Serializable {
+public class Veiculo implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

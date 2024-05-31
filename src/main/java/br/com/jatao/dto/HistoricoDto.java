@@ -16,6 +16,6 @@ public class HistoricoDto {
 
     private Cliente cliente;
 
-    List<OrdemServicoDto> ordemServicoDtos;
+    List<OrdemDeServicoDto> ordemServicoDtos;
 
 }

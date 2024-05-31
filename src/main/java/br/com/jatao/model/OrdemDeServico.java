@@ -1,9 +1,7 @@
 package br.com.jatao.model;
 
 import br.com.jatao.enums.Adicionais;
-import br.com.jatao.enums.Lavagem;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -15,7 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OrdemServico implements Serializable {
+public class OrdemDeServico implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -30,7 +28,7 @@ public class OrdemServico implements Serializable {
     private LocalDateTime data;
 
     @OneToOne
-    private Carro carro;
+    private Veiculo carro;
 
 //    @Enumerated(EnumType.STRING)
 //    private Lavagem lavagem;

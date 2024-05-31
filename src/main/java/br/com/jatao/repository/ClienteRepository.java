@@ -1,7 +1,6 @@
 package br.com.jatao.repository;
 
 import br.com.jatao.model.Cliente;
-import br.com.jatao.model.OrdemServico;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
