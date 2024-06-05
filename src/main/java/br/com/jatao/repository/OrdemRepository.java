@@ -13,10 +13,6 @@ import org.springframework.stereotype.Repository;
 public interface OrdemRepository extends JpaRepository<OrdemDeServico, Long>, PagingAndSortingRepository<OrdemDeServico, Long> {
 
 
-    @Modifying
-    @Query("DELETE FROM OrdemDeServico o WHERE o.carro.placa = :placa")
-    void deleteByCarroPlaca(Long placa);
-
 
     Page<OrdemDeServico> findAll(Pageable paginacao);
 

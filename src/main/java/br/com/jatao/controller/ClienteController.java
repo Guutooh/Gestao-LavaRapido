@@ -5,6 +5,7 @@ import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.exception.OrdemNaoCriadaException;
 import br.com.jatao.service.ClienteService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +24,7 @@ public class ClienteController {
     ClienteService service;
 
     @PostMapping()
-    public ResponseEntity<?> cadastrarCliente(@RequestBody ClienteDto clienteDto) {
+    public ResponseEntity<?> cadastrarCliente(@Valid @RequestBody ClienteDto clienteDto) {
         try {
 
             return ResponseEntity.status(HttpStatus.OK).body(service.cadastrarCliente(clienteDto));
@@ -58,7 +59,7 @@ public class ClienteController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> deletarOrdem(@PathVariable Long id) {
+    public ResponseEntity<?> deletarOrdem(@Valid @PathVariable Long id) {
         try {
             service.deletarCliente(id);
 
@@ -73,7 +74,7 @@ public class ClienteController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<ClienteDto> atualizarCliente(@PathVariable Long id,
+    public ResponseEntity<ClienteDto> atualizarCliente(@Valid @PathVariable Long id,
                                                           @RequestBody ClienteDto clienteDto) {
 
         return service.atualizarCliente(id, clienteDto);

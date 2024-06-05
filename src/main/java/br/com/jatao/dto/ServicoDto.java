@@ -6,6 +6,7 @@ import lombok.Data;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Schema(
         name = "Servico",
@@ -26,21 +27,11 @@ public class ServicoDto implements Serializable {
     @Schema(description = "Valor do serviço")
     @DecimalMax(value = "99999.99", message = "O valor máximo permitido é R$ 99.999,99")
     @PositiveOrZero(message = "O valor do serviço deve ser maior ou igual a zero")
-    @Digits(integer = 5, fraction = 2, message = "O valor deve ter no máximo 5 dígitos inteiros e 2 casas decimais")
+    @Digits(integer = 5, fraction = 2, message = "Valor inválido")
     @NumberFormat(style = NumberFormat.Style.NUMBER, pattern = "#,##0.00")
-    private Double valor;
+    private BigDecimal valor;
 
 
-    private void converterValor() {
-        if (valor != null) {
-            String valorStr = valor.toString();
-
-            if (valorStr.contains(",")) {
-                valorStr = valorStr.replace(",", ".");
-                valor = Double.parseDouble(valorStr);
-            }
-        }
-    }
 }
 
 

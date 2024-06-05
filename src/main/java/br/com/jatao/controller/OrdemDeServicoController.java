@@ -5,6 +5,7 @@ import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.exception.OrdemNaoCriadaException;
 import br.com.jatao.service.OrdemDeServicosService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ public class OrdemDeServicoController {
     OrdemDeServicosService service;
 
     @PostMapping()
-    public ResponseEntity<?> CadastrarOrdem(@RequestBody OrdemDeServicoDto ordemServicoDto) {
+    public ResponseEntity<?> CadastrarOrdem(@Valid @RequestBody OrdemDeServicoDto ordemServicoDto) {
         try {
 
             return ResponseEntity.status(HttpStatus.OK).body(service.CriarOdem(ordemServicoDto));
@@ -57,7 +58,7 @@ public class OrdemDeServicoController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> deletarOrdem(@PathVariable Long id) {
+    public ResponseEntity<?> deletarOrdem(@Valid @PathVariable Long id) {
         try {
             service.deletarOrdem(id);
 
@@ -69,7 +70,7 @@ public class OrdemDeServicoController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<OrdemDeServicoDto> atualizarOrdem(@PathVariable Long id,
+    public ResponseEntity<OrdemDeServicoDto> atualizarOrdem(@Valid @PathVariable Long id,
                                                             @RequestBody OrdemDeServicoDto ordemServicoDto) {
 
         return service.atualizacaoOrdemServico(id, ordemServicoDto);

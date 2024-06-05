@@ -5,6 +5,7 @@ import br.com.jatao.dto.ServicoDto;
 import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.exception.OrdemNaoCriadaException;
 import br.com.jatao.service.ServicoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class ServicoController {
     ServicoService service;
 
     @PostMapping()
-    public ResponseEntity<?> cadastrarServico(@RequestBody ServicoDto servicoDto) {
+    public ResponseEntity<?> cadastrarServico(@Valid  @RequestBody ServicoDto servicoDto) {
         try {
             OrdemDeServicoDto ordemServico = service.criarServico(servicoDto);
             return ResponseEntity.status(HttpStatus.OK).body(ordemServico);
@@ -52,7 +53,7 @@ public class ServicoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> excluirServico(@PathVariable Long id) {
+    public ResponseEntity<?> excluirServico(@Valid @PathVariable Long id) {
         try {
             service.excluirServico(id);
             return ResponseEntity.status(HttpStatus.OK).body("Serviço excluído com sucesso");

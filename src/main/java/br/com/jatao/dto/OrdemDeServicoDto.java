@@ -7,14 +7,13 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-@Schema(        description = "Ordem de serviços")
+@Schema(description = "Ordem de serviços")
 @Data
 public class OrdemDeServicoDto implements Serializable {
 
     private Long id;
 
     @Schema(description = "informações do veiculo")
-    //@NotEmpty(message = "informar veiculo para ordem de serviço")
     @Valid
     private CarroDto carro;
 

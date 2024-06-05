@@ -3,7 +3,6 @@ package br.com.jatao.service;
 import br.com.jatao.dto.OrdemDeServicoDto;
 import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.exception.OrdemNaoCriadaException;
-import br.com.jatao.exception.ServicoJaCadastradaException;
 import br.com.jatao.model.OrdemDeServico;
 import br.com.jatao.model.Servico;
 import br.com.jatao.repository.CarroRepository;
@@ -39,7 +38,6 @@ public class OrdemDeServicosService {
 
     private ClienteService clienteService;
 
-    private ServicoService servicoService;
 
     public OrdemDeServicoDto CriarOdem(OrdemDeServicoDto ordemServicoDto) {
         try {
@@ -86,14 +84,14 @@ public class OrdemDeServicosService {
 
     public void deletarOrdem(Long id) {
 
-        OrdemDeServico ordem = localizarId(id);
+        OrdemDeServico idServico = getIdServico(id);
+        ordemRepository.deleteById(idServico.getId());
 
-        ordemRepository.deleteByCarroPlaca(id);
     }
 
     public ResponseEntity<OrdemDeServicoDto> atualizacaoOrdemServico(Long id, OrdemDeServicoDto ordemServicoDto) {
 
-        OrdemDeServico ordemExistente = ordemRepository.findById(id).get();
+        OrdemDeServico ordemExistente = getIdServico(id);
 
         mapper.map(ordemServicoDto, ordemExistente);
 
@@ -105,18 +103,19 @@ public class OrdemDeServicosService {
     }
 
 
-    public OrdemDeServico localizarId(Long id) {
-        return ordemRepository.findById(id)
-                .orElseThrow(() -> new ObjetoNaoEncontradoException(String.format("Id: %d, não foi encontrada ",
-                        id)));
-    }
-
     public Page<OrdemDeServicoDto> todasOrdensPorPlaca(String placa, Pageable pageable) {
         Page<OrdemDeServico> search = ordemRepository.findByCarroPlacaContainingIgnoreCase(placa, pageable);
 
         if (search.isEmpty()) {
-            throw new ObjetoNaoEncontradoException(String.format("Placa: %s, não foi encontrada ", placa));
+            throw new ObjetoNaoEncontradoException(String.format("Placa: %s, não localizado ", placa));
         }
         return search.map(ordemServico -> mapper.map(ordemServico, OrdemDeServicoDto.class));
     }
+
+    private OrdemDeServico getIdServico(Long id) {
+        return ordemRepository.findById(id).orElseThrow(
+                () -> new ObjetoNaoEncontradoException((String.format("ID: %d, não localizado ", id))));
+    }
+
+
 }

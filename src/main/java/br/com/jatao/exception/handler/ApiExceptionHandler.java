@@ -1,5 +1,6 @@
 package br.com.jatao.exception.handler;
 
+import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.exception.OrdemNaoCriadaException;
 import br.com.jatao.exception.ServicoJaCadastradaException;
 import br.com.jatao.exception.error.Problem;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
-//
+
 //    //capturar todas exceções não tratadas
 //    @ExceptionHandler(Exception.class)
 //    public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
@@ -75,6 +76,21 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(problem, new HttpHeaders(), status);
     }
+
+
+    @ExceptionHandler(ObjetoNaoEncontradoException.class)
+    public ResponseEntity<?> handleObjetoNaoEncontradoExceptionException(ObjetoNaoEncontradoException ex, WebRequest request) {
+
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ProblemType problemType = ProblemType.OBJETO_NAO_ENCONTRADO;
+        String detail = ex.getMessage();
+
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
+
 
 
     @ExceptionHandler(OrdemNaoCriadaException.class)
