@@ -42,68 +42,34 @@ public class OrdemDeServicosService {
     private ServicoService servicoService;
 
     public OrdemDeServicoDto CriarOdem(OrdemDeServicoDto ordemServicoDto) {
-
         try {
-
-            // Mapear o DTO para a entidade OrdemServico
             OrdemDeServico ordemModel = mapper.map(ordemServicoDto, OrdemDeServico.class);
 
-            // Verificar e salvar carro se necessário
             if (ordemModel.getCarro().getId() == null) {
-                carroRepository.save(ordemModel.getCarro());
+                ordemModel.setCarro(carroRepository.save(ordemModel.getCarro()));
             }
 
-            // Verificar e salvar cliente se necessário
             if (ordemModel.getCliente().getId() == null || clienteService.buscarId(ordemModel.getCliente().getId()) == null) {
-                clienteRepository.save(ordemModel.getCliente());
+                ordemModel.setCliente(clienteRepository.save(ordemModel.getCliente()));
             }
 
-            // Verificar e salvar serviço se necessário
-            if (ordemModel.getServico() != null) {
-                var nomeServico = ordemModel.getServico().getNomeServico();
-                Optional<Servico> servicoExistenteOptional = servicoRepository.findFirstByNomeServicoIgnoreCase(nomeServico);
+            var nomeServico = ordemModel.getServico().getNomeServico();
+            Optional<Servico> servicoExistenteOptional = servicoRepository.findByNomeServicoIgnoreCase(nomeServico);
 
-                servicoExistenteOptional.ifPresentOrElse(
-                        servico -> {
-                            ordemModel.getServico().setNomeServico(servico.getNomeServico());
-                            ordemModel.getServico().setValor(servico.getValor());
-                            servicoRepository.save(ordemModel.getServico());
-                        },
-                        () -> ordemModel.setServico(servicoRepository.save(ordemModel.getServico()))
-                );
+            if (servicoExistenteOptional.isPresent()) {
+                ordemModel.setServico(servicoExistenteOptional.get());
+            } else {
+                ordemModel.setServico(servicoRepository.save(ordemModel.getServico()));
             }
-
-//            //verifica os serviços existeste e salva se necessário
-//            if (ordemModel.getServico() != null ) {
-//
-//                var nomeServico = ordemModel.getServico().getNomeServico();
-//
-//                Optional<Servico> servicoExistenteOptional =
-//                       servicoRepository.findFirstByNomeServicoIgnoreCase(nomeServico);
-//
-//                if (servicoExistenteOptional.isPresent()) {
-//
-//                    Servico servico = servicoExistenteOptional.get();
-//
-//                    ordemModel.getServico().setNomeServico(servico.getNomeServico());
-//                    ordemModel.getServico().setValor(servico.getValor());
-//
-//                    servicoRepository.save(ordemModel.getServico());
-
-//                } else {
-//                    ordemModel.setServico(servicoRepository.save(ordemModel.getServico()));
-//                }
-//            }
 
             ordemRepository.save(ordemModel);
 
             return mapper.map(ordemModel, OrdemDeServicoDto.class);
-
-        } catch (OrdemNaoCriadaException e) {
-            throw new OrdemNaoCriadaException("Ordem não criada.");
+        } catch (Exception e) {
+            throw new OrdemNaoCriadaException("Ordem não criada.", e);
         }
-
     }
+
 
     public Page<OrdemDeServicoDto> listarOrdensServico(@PageableDefault(page = 0, size = 10, sort = "id",
             direction = Sort.Direction.ASC) Pageable paginacao) {

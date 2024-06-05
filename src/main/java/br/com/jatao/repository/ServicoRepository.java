@@ -16,4 +16,5 @@ public interface ServicoRepository extends JpaRepository<Servico,Long> {
     @Query("SELECT s.id FROM Servico s WHERE LOWER(s.nomeServico) = LOWER(:nomeServico)")
     Optional<Long> findIdByNomeServicoIgnoreCase(@Param("nomeServico") String nomeServico);
 
+    Optional<Servico> findByNomeServicoIgnoreCase(String nomeServico);
 }

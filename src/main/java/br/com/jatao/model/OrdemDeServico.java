@@ -34,7 +34,7 @@ public class OrdemDeServico implements Serializable {
 //    private Lavagem lavagem;
 
 
-    @OneToOne
+    @ManyToOne
     private Servico servico;
 
     @Enumerated(EnumType.STRING)
