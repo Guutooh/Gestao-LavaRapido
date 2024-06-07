@@ -39,7 +39,7 @@ public class OrdemDeServicosService {
     private ClienteService clienteService;
 
 
-    public OrdemDeServicoDto CriarOdem(OrdemDeServicoDto ordemServicoDto) {
+    public OrdemDeServicoDto criarOrdem(OrdemDeServicoDto ordemServicoDto) {
         try {
             OrdemDeServico ordemModel = mapper.map(ordemServicoDto, OrdemDeServico.class);
 
