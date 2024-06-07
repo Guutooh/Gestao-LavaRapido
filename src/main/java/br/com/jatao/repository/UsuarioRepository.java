@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserModel, Long> {
+public interface UsuarioRepository extends JpaRepository<UserModel, Long> {
 
     UserDetails findByEmail(String username);
 

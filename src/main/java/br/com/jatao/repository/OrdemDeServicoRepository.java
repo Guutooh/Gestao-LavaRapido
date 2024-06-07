@@ -4,13 +4,11 @@ import br.com.jatao.model.OrdemDeServico;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OrdemRepository extends JpaRepository<OrdemDeServico, Long>, PagingAndSortingRepository<OrdemDeServico, Long> {
+public interface OrdemDeServicoRepository extends JpaRepository<OrdemDeServico, Long>, PagingAndSortingRepository<OrdemDeServico, Long> {
 
 
 

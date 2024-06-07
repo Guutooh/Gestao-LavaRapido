@@ -5,9 +5,9 @@ import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.exception.OrdemNaoCriadaException;
 import br.com.jatao.model.OrdemDeServico;
 import br.com.jatao.model.Servico;
-import br.com.jatao.repository.CarroRepository;
+import br.com.jatao.repository.VeiculoRepository;
 import br.com.jatao.repository.ClienteRepository;
-import br.com.jatao.repository.OrdemRepository;
+import br.com.jatao.repository.OrdemDeServicoRepository;
 import br.com.jatao.repository.ServicoRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -26,9 +26,9 @@ import java.util.Optional;
 public class OrdemDeServicosService {
 
 
-    OrdemRepository ordemRepository;
+    OrdemDeServicoRepository ordemDeServicoRepository;
 
-    CarroRepository carroRepository;
+    VeiculoRepository veiculoRepository;
 
     ClienteRepository clienteRepository;
 
@@ -44,7 +44,7 @@ public class OrdemDeServicosService {
             OrdemDeServico ordemModel = mapper.map(ordemServicoDto, OrdemDeServico.class);
 
             if (ordemModel.getCarro().getId() == null) {
-                ordemModel.setCarro(carroRepository.save(ordemModel.getCarro()));
+                ordemModel.setCarro(veiculoRepository.save(ordemModel.getCarro()));
             }
 
             if (ordemModel.getCliente().getId() == null || clienteService.buscarId(ordemModel.getCliente().getId()) == null) {
@@ -60,7 +60,7 @@ public class OrdemDeServicosService {
                 ordemModel.setServico(servicoRepository.save(ordemModel.getServico()));
             }
 
-            ordemRepository.save(ordemModel);
+            ordemDeServicoRepository.save(ordemModel);
 
             return mapper.map(ordemModel, OrdemDeServicoDto.class);
         } catch (Exception e) {
@@ -73,7 +73,7 @@ public class OrdemDeServicosService {
             direction = Sort.Direction.ASC) Pageable paginacao) {
 
         try {
-            Page<OrdemDeServico> ordens = ordemRepository.findAll(paginacao);
+            Page<OrdemDeServico> ordens = ordemDeServicoRepository.findAll(paginacao);
 
             return ordens.map(ordemServico -> mapper.map(ordemServico, OrdemDeServicoDto.class));
 
@@ -85,7 +85,7 @@ public class OrdemDeServicosService {
     public void deletarOrdem(Long id) {
 
         OrdemDeServico idServico = getIdServico(id);
-        ordemRepository.deleteById(idServico.getId());
+        ordemDeServicoRepository.deleteById(idServico.getId());
 
     }
 
@@ -95,7 +95,7 @@ public class OrdemDeServicosService {
 
         mapper.map(ordemServicoDto, ordemExistente);
 
-        ordemRepository.save(ordemExistente);
+        ordemDeServicoRepository.save(ordemExistente);
 
         OrdemDeServicoDto dtoAtualizado = mapper.map(ordemExistente, OrdemDeServicoDto.class);
 
@@ -104,7 +104,7 @@ public class OrdemDeServicosService {
 
 
     public Page<OrdemDeServicoDto> todasOrdensPorPlaca(String placa, Pageable pageable) {
-        Page<OrdemDeServico> search = ordemRepository.findByCarroPlacaContainingIgnoreCase(placa, pageable);
+        Page<OrdemDeServico> search = ordemDeServicoRepository.findByCarroPlacaContainingIgnoreCase(placa, pageable);
 
         if (search.isEmpty()) {
             throw new ObjetoNaoEncontradoException(String.format("Placa: %s, não localizado ", placa));
@@ -113,7 +113,7 @@ public class OrdemDeServicosService {
     }
 
     private OrdemDeServico getIdServico(Long id) {
-        return ordemRepository.findById(id).orElseThrow(
+        return ordemDeServicoRepository.findById(id).orElseThrow(
                 () -> new ObjetoNaoEncontradoException((String.format("ID: %d, não localizado ", id))));
     }
 
