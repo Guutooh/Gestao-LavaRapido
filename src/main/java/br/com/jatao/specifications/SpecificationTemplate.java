@@ -11,7 +11,13 @@ public class SpecificationTemplate {
 
     //@And // vai trazer se ambos parametros forem verdadeiros;
     @Or({
+            /*
+            path é o atributo da classe a ser filtrado,
+            Usando LikeIgnoreCase com padrão que inclui caracteres curinga '%'
+            %?0% será substituído pelo valor fornecido no parâmetro de pesquisa.
+            Isso fará com que a consulta busque qualquer parte do nome que corresponda ao valor fornecido.
 
+        */
             @Spec(path = "nome", spec = LikeIgnoreCase.class, params = {"%?0%"}), //
             // Equal para trazer exatamente o que foi digitado
             @Spec(path = "celular", spec = Equal.class,params = {"%?0%"})
