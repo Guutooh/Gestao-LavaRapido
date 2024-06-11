@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Ordem de serviços", description = "CRUD REST APIs para criar, atualizar, buscar e deletar ordens de serviço")
 @Validated
 @RestController
-@RequestMapping("/ordem")
+@RequestMapping("/ordens")
 public class OrdemDeServicoController {
 
     @Autowired

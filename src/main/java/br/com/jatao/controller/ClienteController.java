@@ -1,10 +1,9 @@
 package br.com.jatao.controller;
 
 import br.com.jatao.dto.ClienteDto;
-import br.com.jatao.exception.ObjetoNaoEncontradoException;
-import br.com.jatao.exception.OrdemNaoCriadaException;
 import br.com.jatao.exception.error.Problem;
 import br.com.jatao.service.ClienteService;
+import br.com.jatao.specifications.SpecificationTemplate;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Clientes", description = "APIs REST para criação, atualização, busca e deleção de clientes")
 @Validated
 @RestController
-@RequestMapping("/cliente")
+@RequestMapping("/clientes")
 public class ClienteController {
 
     @Autowired
@@ -51,11 +50,7 @@ public class ClienteController {
     })
     @PostMapping()
     public ResponseEntity<?> cadastrarCliente(@Valid @RequestBody ClienteDto clienteDto) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(service.cadastrarCliente(clienteDto));
-        } catch (OrdemNaoCriadaException e) {
-            throw new OrdemNaoCriadaException(e.getMessage());
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.cadastrarCliente(clienteDto));
     }
 
     @Operation(
@@ -75,15 +70,18 @@ public class ClienteController {
                     )
             )
     })
-    @GetMapping("/{nome}")
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> consultarClientePorID(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.buscarId(id));
+    }
+
+
+    @GetMapping("consultarNomeCliente/{nome}")
     public ResponseEntity<Page<ClienteDto>> consultarNomeCliente(
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable paginacao,
             @PathVariable String nome) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(service.consultarNome(nome, paginacao));
-        } catch (ObjetoNaoEncontradoException e) {
-            throw new ObjetoNaoEncontradoException(e.getMessage());
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(service.consultarNome(nome, paginacao));
     }
 
     @Operation(
@@ -103,15 +101,14 @@ public class ClienteController {
                     )
             )
     })
-    @GetMapping()
-    public ResponseEntity<Page<ClienteDto>> listarClientes(
-            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable paginacao) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(service.listarClientes(paginacao));
-        } catch (ObjetoNaoEncontradoException e) {
-            throw new ObjetoNaoEncontradoException(e.getMessage());
-        }
+
+    @GetMapping("/listar")
+    public ResponseEntity<Page<ClienteDto>> listarClientes(SpecificationTemplate.ClienteSpec spec,
+                                                           @PageableDefault(page = 0, size = 10, sort = "id",
+                                                                   direction = Sort.Direction.ASC) Pageable paginacao) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.listarClientes(spec,paginacao));
     }
+
 
     @Operation(
             summary = "Deleção de cliente",
@@ -133,13 +130,10 @@ public class ClienteController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<?> deletarCliente(@Valid @PathVariable Long id) {
-        try {
-            service.deletarCliente(id);
-            return ResponseEntity.ok().body("Cliente deletado com sucesso!");
-        } catch (ObjetoNaoEncontradoException e) {
-            throw new ObjetoNaoEncontradoException(e.getMessage());
-        }
+        service.deletarCliente(id);
+        return ResponseEntity.ok().body("Cliente deletado com sucesso!");
     }
+
 
     @Operation(
             summary = "Atualização de cliente",

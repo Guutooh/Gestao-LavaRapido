@@ -4,13 +4,18 @@ import br.com.jatao.dto.ClienteDto;
 import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.model.Cliente;
 import br.com.jatao.repository.ClienteRepository;
+import br.com.jatao.specifications.SpecificationTemplate;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -23,10 +28,9 @@ public class ClienteService {
 
     public ClienteDto cadastrarCliente(ClienteDto clienteDto) {
 
-        var cliente = mapper.map(clienteDto, Cliente.class);
+        Cliente cliente = mapper.map(clienteDto, Cliente.class);
 
         // Verificar e salvar carro se necessário
-
         clienteRepository.save(cliente);
 
         // Mapear ordemModel de volta para ordemDto
@@ -34,17 +38,44 @@ public class ClienteService {
 
     }
 
-    public Page<ClienteDto> listarClientes(Pageable paginacao) {
+    public Page<ClienteDto> listarClientes(SpecificationTemplate.ClienteSpec spec, Pageable pageable) {
+        Page<Cliente> clientes = clienteRepository.findAll(spec, pageable);
 
-        try {
-            Page<Cliente> clientes = clienteRepository.findAll(paginacao);
-
-            return clientes.map(c -> mapper.map(clientes, ClienteDto.class));
-
-        } catch (ObjetoNaoEncontradoException e) {
-            throw new ObjetoNaoEncontradoException(e.getMessage());
+        if (clientes == null || clientes.isEmpty()) {
+            throw new ObjetoNaoEncontradoException("Nenhum cliente encontrado.");
         }
+
+        List<ClienteDto> clienteDtoList = new ArrayList<>();
+        for (Cliente cliente : clientes.getContent()) {
+            clienteDtoList.add(mapper.map(cliente, ClienteDto.class));
+        }
+
+        return new PageImpl<>(clienteDtoList, pageable, clientes.getTotalElements());
     }
+
+
+
+//    public Page<ClienteDto> listarClientes(SpecificationTemplate.ClienteSpec spec, Pageable pageable) {
+//
+//        Page<Cliente> clientes = clienteRepository.findAll(spec, pageable);
+//
+//        if (clientes.isEmpty()) {
+//            throw new ObjetoNaoEncontradoException("Nenhum cliente encontrado.");
+//        }
+//
+//        List<ClienteDto> clienteDtoList = mapClientesToDto(clientes.getContent());
+//
+//        return new PageImpl<>(clienteDtoList, pageable, clientes.getTotalElements());
+//    }
+//
+//    private List<ClienteDto> mapClientesToDto(List<Cliente> clientes) {
+//        return clientes.stream()
+//                .map(cliente -> mapper.map(cliente, ClienteDto.class))
+//                .collect(Collectors.toList());
+//    }
+
+
+
 
     public void deletarCliente(Long id) {
 

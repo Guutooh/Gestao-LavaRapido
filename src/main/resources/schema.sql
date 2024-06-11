@@ -38,6 +38,8 @@ CREATE TABLE cliente
 -- Inserir dados na tabela Cliente
 INSERT INTO cliente (nome, celular)
 VALUES ('João da Silva', '11987654321'),
+       ('João da santos', '11987654322'),
+       ('João da gomes', '11987654323'),
        ('Maria Oliveira', '11987651234'),
        ('Pedro Santos', '11987659876'),
        ('Ana Souza', '11987658765'),
