@@ -54,14 +54,10 @@ public class ServicoController {
     })
     @PostMapping()
     public ResponseEntity<?> cadastrarServico(@Valid @RequestBody ServicoDto servicoDto) {
-        try {
-            OrdemDeServicoDto ordemServico = service.criarServico(servicoDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(ordemServico);
-        } catch (OrdemNaoCriadaException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno: " + e.getMessage());
-        }
+
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.criarServico(servicoDto));
+
     }
 
     @Operation(
@@ -90,14 +86,8 @@ public class ServicoController {
     })
     @GetMapping()
     public ResponseEntity<List<ServicoDto>> consultarServicos() {
-        try {
-            List<ServicoDto> servicos = service.todosServicos();
-            return ResponseEntity.status(HttpStatus.OK).body(servicos);
-        } catch (ObjetoNaoEncontradoException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(service.todosServicos());
     }
 
     @Operation(
@@ -126,13 +116,8 @@ public class ServicoController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> excluirServico(@Valid @PathVariable Long id) {
-        try {
-            service.excluirServico(id);
-            return ResponseEntity.status(HttpStatus.OK).body("Serviço excluído com sucesso");
-        } catch (ObjetoNaoEncontradoException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno: " + e.getMessage());
-        }
+
+        service.excluirServico(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Serviço excluído com sucesso");
     }
 }

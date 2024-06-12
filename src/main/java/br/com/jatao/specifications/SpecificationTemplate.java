@@ -1,6 +1,7 @@
 package br.com.jatao.specifications;
 
 import br.com.jatao.model.Cliente;
+import br.com.jatao.model.OrdemDeServico;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
 import net.kaczmarzyk.spring.data.jpa.domain.LikeIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Or;
@@ -18,11 +19,21 @@ public class SpecificationTemplate {
             Isso fará com que a consulta busque qualquer parte do nome que corresponda ao valor fornecido.
 
         */
-            @Spec(path = "nome", spec = LikeIgnoreCase.class, params = {"%?0%"}), //
+            @Spec(path = "nome", spec = LikeIgnoreCase.class), //
             // Equal para trazer exatamente o que foi digitado
-            @Spec(path = "celular", spec = Equal.class,params = {"%?0%"})
+            @Spec(path = "celular", spec = Equal.class)
     })
     public interface ClienteSpec extends Specification<Cliente> {
 
     }
+
+    @Or({
+            @Spec(path = "cliente", spec = LikeIgnoreCase.class), //
+            @Spec(path = "servico", spec = LikeIgnoreCase.class),
+            @Spec(path = "data", spec = Equal.class)
+    })
+    public interface OrdemDeServicoSpec extends Specification<OrdemDeServico> {
+
+    }
+
 }

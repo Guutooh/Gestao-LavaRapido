@@ -5,6 +5,7 @@ import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.exception.OrdemNaoCriadaException;
 import br.com.jatao.exception.error.Problem;
 import br.com.jatao.service.OrdemDeServicosService;
+import br.com.jatao.specifications.SpecificationTemplate;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -51,11 +52,9 @@ public class OrdemDeServicoController {
     })
     @PostMapping()
     public ResponseEntity<?> cadastrarOrdem(@Valid @RequestBody OrdemDeServicoDto ordemServicoDto) {
-        try {
+
             return ResponseEntity.status(HttpStatus.CREATED).body(service.criarOrdem(ordemServicoDto));
-        } catch (OrdemNaoCriadaException e) {
-            throw new OrdemNaoCriadaException(e.getMessage());
-        }
+
     }
 
     @Operation(
@@ -79,11 +78,9 @@ public class OrdemDeServicoController {
     public ResponseEntity<Page<OrdemDeServicoDto>> consultarOrdem(
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable paginacao,
             @PathVariable String placa) {
-        try {
+
             return ResponseEntity.status(HttpStatus.OK).body(service.todasOrdensPorPlaca(placa, paginacao));
-        } catch (ObjetoNaoEncontradoException e) {
-            throw new ObjetoNaoEncontradoException(e.getMessage());
-        }
+
     }
 
     @Operation(
@@ -105,12 +102,11 @@ public class OrdemDeServicoController {
     })
     @GetMapping()
     public ResponseEntity<Page<OrdemDeServicoDto>> listarOrdens(
+            SpecificationTemplate.OrdemDeServicoSpec spec,
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable paginacao) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(service.listarOrdensServico(paginacao));
-        } catch (ObjetoNaoEncontradoException e) {
-            throw new ObjetoNaoEncontradoException(e.getMessage());
-        }
+
+            return ResponseEntity.status(HttpStatus.OK).body(service.listarOrdensServico(spec,paginacao));
+
     }
 
     @Operation(
@@ -133,12 +129,10 @@ public class OrdemDeServicoController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<?> deletarOrdem(@Valid @PathVariable Long id) {
-        try {
+
             service.deletarOrdem(id);
             return ResponseEntity.ok().body("Ordem deletada com sucesso!");
-        } catch (ObjetoNaoEncontradoException e) {
-            throw new ObjetoNaoEncontradoException(e.getMessage());
-        }
+
     }
 
     @Operation(

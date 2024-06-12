@@ -5,10 +5,11 @@ import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.exception.OrdemNaoCriadaException;
 import br.com.jatao.model.OrdemDeServico;
 import br.com.jatao.model.Servico;
-import br.com.jatao.repository.VeiculoRepository;
 import br.com.jatao.repository.ClienteRepository;
 import br.com.jatao.repository.OrdemDeServicoRepository;
 import br.com.jatao.repository.ServicoRepository;
+import br.com.jatao.repository.VeiculoRepository;
+import br.com.jatao.specifications.SpecificationTemplate;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -69,11 +70,11 @@ public class OrdemDeServicosService {
     }
 
 
-    public Page<OrdemDeServicoDto> listarOrdensServico(@PageableDefault(page = 0, size = 10, sort = "id",
+    public Page<OrdemDeServicoDto> listarOrdensServico(SpecificationTemplate.OrdemDeServicoSpec spec, @PageableDefault(page = 0, size = 10, sort = "id",
             direction = Sort.Direction.ASC) Pageable paginacao) {
 
         try {
-            Page<OrdemDeServico> ordens = ordemDeServicoRepository.findAll(paginacao);
+            Page<OrdemDeServico> ordens = ordemDeServicoRepository.findAll(spec, paginacao);
 
             return ordens.map(ordemServico -> mapper.map(ordemServico, OrdemDeServicoDto.class));
 
