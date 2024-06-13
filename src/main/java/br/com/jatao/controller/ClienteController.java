@@ -81,7 +81,7 @@ public class ClienteController {
     public ResponseEntity<Page<ClienteDto>> consultarNomeCliente(
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable paginacao,
             @PathVariable String nome) {
-        return ResponseEntity.status(HttpStatus.OK).body(service.consultarNome(nome, paginacao));
+        return ResponseEntity.status(HttpStatus.OK).body(service.consultarNome( nome, paginacao));
     }
 
     @Operation(

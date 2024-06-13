@@ -19,8 +19,7 @@ public class SpecificationTemplate {
             Isso fará com que a consulta busque qualquer parte do nome que corresponda ao valor fornecido.
 
         */
-            @Spec(path = "nome", spec = LikeIgnoreCase.class), //
-            // Equal para trazer exatamente o que foi digitado
+            @Spec(path = "nome", spec = LikeIgnoreCase.class),
             @Spec(path = "celular", spec = Equal.class)
     })
     public interface ClienteSpec extends Specification<Cliente> {
@@ -33,7 +32,14 @@ public class SpecificationTemplate {
             @Spec(path = "data", spec = Equal.class)
     })
     public interface OrdemDeServicoSpec extends Specification<OrdemDeServico> {
+    }
 
+
+    public static Specification<OrdemDeServico> ConsultaOrdensPlaca(String placa) {
+        return (root, query, builder) ->
+                builder.like(builder.lower(root.get("carro").get("placa")), "%" + placa.toLowerCase() + "%");
     }
 
 }
+
+

@@ -1,6 +1,7 @@
 package br.com.jatao.repository;
 
 import br.com.jatao.model.Cliente;
+import br.com.jatao.specifications.SpecificationTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -12,10 +13,10 @@ import org.springframework.stereotype.Repository;
 public interface ClienteRepository extends JpaRepository<Cliente, Long>, JpaSpecificationExecutor<Cliente> {
 
 
-    Page<Cliente> findByNomeContainingIgnoreCase(String nome, Pageable pageable);
+    //Page<Cliente> findByNomeContainingIgnoreCase(String nome, Pageable pageable);
 
     Page<Cliente> findAll(Specification<Cliente> spec, Pageable pageable);
 
 
-
+    Page<Cliente> findByNomeContainingIgnoreCase(String nome, Pageable paginacao);
 }

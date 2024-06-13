@@ -75,11 +75,12 @@ public class OrdemDeServicoController {
             )
     })
     @GetMapping("/{placa}")
-    public ResponseEntity<Page<OrdemDeServicoDto>> consultarOrdem(
+    public ResponseEntity<Page<OrdemDeServicoDto>> consultarOrdensPorPlaca(
+            SpecificationTemplate.OrdemDeServicoSpec spec,
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable paginacao,
             @PathVariable String placa) {
 
-            return ResponseEntity.status(HttpStatus.OK).body(service.todasOrdensPorPlaca(placa, paginacao));
+            return ResponseEntity.status(HttpStatus.OK).body(service.todasOrdensPorPlaca(spec,placa, paginacao));
 
     }
 

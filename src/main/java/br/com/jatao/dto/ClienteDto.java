@@ -17,7 +17,7 @@ public class ClienteDto implements Serializable {
 
     @Schema(description = "Nome do cliente", example = "Trentor")
     @Nullable
-    @Size(min = 5, max = 30, message = "O nome do cliente deve conter entre 5 e 30 caracteres")
+    @Size(min = 4, max = 30, message = "O nome do cliente deve conter entre 5 e 30 caracteres")
     private String nome;
 
     @Schema(description = "Celular do cliente", example = "(11)999999999")
