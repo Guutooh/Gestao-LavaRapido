@@ -1,8 +1,7 @@
 package br.com.jatao.controller;
 
 import br.com.jatao.dto.OrdemDeServicoDto;
-import br.com.jatao.exception.ObjetoNaoEncontradoException;
-import br.com.jatao.exception.OrdemNaoCriadaException;
+import br.com.jatao.dto.responseDto.OrdemDeServicoDtoResponse;
 import br.com.jatao.exception.error.Problem;
 import br.com.jatao.service.OrdemDeServicosService;
 import br.com.jatao.specifications.SpecificationTemplate;
@@ -75,9 +74,9 @@ public class OrdemDeServicoController {
             )
     })
     @GetMapping("/{placa}")
-    public ResponseEntity<Page<OrdemDeServicoDto>> consultarOrdensPorPlaca(
+    public ResponseEntity<Page<OrdemDeServicoDtoResponse>> consultarOrdensPorPlaca(
             SpecificationTemplate.OrdemDeServicoSpec spec,
-            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable paginacao,
+            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable paginacao,
             @PathVariable String placa) {
 
             return ResponseEntity.status(HttpStatus.OK).body(service.todasOrdensPorPlaca(spec,placa, paginacao));
@@ -102,9 +101,9 @@ public class OrdemDeServicoController {
             )
     })
     @GetMapping()
-    public ResponseEntity<Page<OrdemDeServicoDto>> listarOrdens(
+    public ResponseEntity<Page<OrdemDeServicoDtoResponse>> listarOrdens(
             SpecificationTemplate.OrdemDeServicoSpec spec,
-            @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable paginacao) {
+            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable paginacao) {
 
             return ResponseEntity.status(HttpStatus.OK).body(service.listarOrdensServico(spec,paginacao));
 

@@ -1,39 +1,39 @@
-package br.com.jatao.dto;
+package br.com.jatao.dto.responseDto;
 
+import br.com.jatao.dto.ClienteDto;
+import br.com.jatao.dto.ServicoDto;
+import br.com.jatao.dto.VeiculoDto;
 import br.com.jatao.enums.Adicionais;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.annotation.Nullable;
-import jakarta.validation.Valid;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Schema(
-        name = "Ordem De Servico",
-        description = "Ordem de serviço"
+        name = "Ordem De Servico Response",
+        description = "Ordem de serviço para resposta"
 )
 @Data
-public class OrdemDeServicoDto implements Serializable {
+public class OrdemDeServicoDtoResponse implements Serializable {
 
     @Schema(description = "Identificador único da ordem de serviço", example = "1")
     private Long id;
 
     @Schema(description = "Informações do veículo")
-    @Valid
     private VeiculoDto carro;
 
     @Schema(description = "Informações do serviço")
-    @Valid
     private ServicoDto servico;
 
     @Schema(description = "Informações de adicionais")
-    @Valid
-    @Nullable
     private Adicionais adicionais;
 
     @Schema(description = "Informações do cliente")
-    @Valid
-    @Nullable
     private ClienteDto cliente;
 
+    @Schema(description = "Data da Ordem de Serviço", example = "17-06-14 15:30")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+    private LocalDateTime dataDaOrdem; // Novo campo adicionado
 }

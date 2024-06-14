@@ -29,10 +29,13 @@ public class ServicoService {
     private ModelMapper mapper;
 
 
-    public OrdemDeServicoDto criarServico(@RequestBody ServicoDto servicoDto) {
+    public ServicoDto criarServico(@RequestBody ServicoDto servicoDto) {
+
         try {
             Servico servico = mapper.map(servicoDto, Servico.class);
-            return mapper.map(servicoRepository.save(servico), OrdemDeServicoDto.class);
+
+            return mapper.map(servicoRepository.save(servico), ServicoDto.class);
+
         } catch (Exception e) {
             throw new OrdemNaoCriadaException("Erro ao criar serviço: " + e.getMessage());
         }

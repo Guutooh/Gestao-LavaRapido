@@ -18,7 +18,7 @@ public class HistoricoDto implements Serializable {
     private Long id;
 
     @Schema(description = "Informações do carro relacionado ao histórico")
-    private CarroDto carroDto;
+    private VeiculoDto veiculoDto;
 
     @Schema(description = "Informações do cliente relacionado ao histórico")
     private Cliente cliente;

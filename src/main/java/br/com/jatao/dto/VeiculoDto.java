@@ -13,7 +13,7 @@ import java.io.Serializable;
         description = "Informações do veículo"
 )
 @Data
-public class CarroDto implements Serializable {
+public class VeiculoDto implements Serializable {
 
     @Schema(description = "Placa do veículo", example = "BRA2E19")
     @NotEmpty(message = "Informe a placa do veículo")

@@ -1,6 +1,10 @@
 package br.com.jatao.service;
 
+import br.com.jatao.dto.ClienteDto;
 import br.com.jatao.dto.OrdemDeServicoDto;
+import br.com.jatao.dto.ServicoDto;
+import br.com.jatao.dto.VeiculoDto;
+import br.com.jatao.dto.responseDto.OrdemDeServicoDtoResponse;
 import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.exception.OrdemNaoCriadaException;
 import br.com.jatao.model.OrdemDeServico;
@@ -56,9 +60,10 @@ public class OrdemDeServicosService {
                 ordemModel.setCarro(veiculoRepository.save(ordemModel.getCarro()));
             }
 
-            if (ordemModel.getCliente().getId() == null || clienteService.buscarId(ordemModel.getCliente().getId()) == null) {
+            if (ordemModel.getCliente() != null && ordemModel.getCliente().getId() == null) {
                 ordemModel.setCliente(clienteRepository.save(ordemModel.getCliente()));
             }
+
 
             var nomeServico = ordemModel.getServico().getNomeServico();
             Optional<Servico> servicoExistenteOptional = servicoRepository.findByNomeServicoIgnoreCase(nomeServico);
@@ -78,13 +83,13 @@ public class OrdemDeServicosService {
     }
 
 
-    public Page<OrdemDeServicoDto> listarOrdensServico(SpecificationTemplate.OrdemDeServicoSpec spec, @PageableDefault(page = 0, size = 10, sort = "id",
+    public Page<OrdemDeServicoDtoResponse> listarOrdensServico(SpecificationTemplate.OrdemDeServicoSpec spec, @PageableDefault(sort = "id",
             direction = Sort.Direction.ASC) Pageable paginacao) {
 
         try {
             Page<OrdemDeServico> ordens = ordemDeServicoRepository.findAll(spec, paginacao);
 
-            return ordens.map(ordemServico -> mapper.map(ordemServico, OrdemDeServicoDto.class));
+            return ordens.map(ordemServico -> mapper.map(ordemServico, OrdemDeServicoDtoResponse.class));
 
         } catch (ObjetoNaoEncontradoException e) {
             throw new ObjetoNaoEncontradoException(e.getMessage());
@@ -113,8 +118,7 @@ public class OrdemDeServicosService {
     }
 
 
-
-    public Page<OrdemDeServicoDto> todasOrdensPorPlaca(SpecificationTemplate.OrdemDeServicoSpec spec,
+    public Page<OrdemDeServicoDtoResponse> todasOrdensPorPlaca(SpecificationTemplate.OrdemDeServicoSpec spec,
                                                        String placa,
                                                        Pageable pageable) {
 
@@ -127,10 +131,20 @@ public class OrdemDeServicosService {
             throw new ObjetoNaoEncontradoException(String.format("Placa: %s, não localizada", placa));
         }
 
+        return search.map(ordemServico -> {
+            OrdemDeServicoDtoResponse dto = new OrdemDeServicoDtoResponse();
+            dto.setId(ordemServico.getId());
+            dto.setCarro(mapper.map(ordemServico.getCarro(), VeiculoDto.class));
+            dto.setServico(mapper.map(ordemServico.getServico(), ServicoDto.class));
+            dto.setAdicionais(ordemServico.getAdicionais());
+            if (ordemServico.getCliente() != null) {
+                dto.setCliente(mapper.map(ordemServico.getCliente(), ClienteDto.class));
+            }
+            dto.setDataDaOrdem(ordemServico.getDataDaOrdem()); // Adicionando a data da ordem
 
-        return search.map(ordemServico -> mapper.map(ordemServico, OrdemDeServicoDto.class));
+            return dto;
+        });
     }
-
 
 
     private OrdemDeServico getIdServico(Long id) {
