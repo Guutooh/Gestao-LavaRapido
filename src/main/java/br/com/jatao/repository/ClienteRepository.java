@@ -13,10 +13,10 @@ import org.springframework.stereotype.Repository;
 public interface ClienteRepository extends JpaRepository<Cliente, Long>, JpaSpecificationExecutor<Cliente> {
 
 
-    //Page<Cliente> findByNomeContainingIgnoreCase(String nome, Pageable pageable);
+    Page<Cliente> findByNomeContainingIgnoreCase(String nome, Pageable pageable);
 
     Page<Cliente> findAll(Specification<Cliente> spec, Pageable pageable);
 
 
-    Page<Cliente> findByNomeContainingIgnoreCase(String nome, Pageable paginacao);
+
 }

@@ -40,6 +40,13 @@ public class OrdemDeServicosService {
 
     private ClienteService clienteService;
 
+    /**
+     * Cria uma nova ordem de serviço.
+     *
+     * @param ordemServicoDto os detalhes da ordem de serviço a ser criada
+     * @return a ordem de serviço criada
+     * @throws OrdemNaoCriadaException se houver um erro durante a criação da ordem
+     */
 
     public OrdemDeServicoDto criarOrdem(OrdemDeServicoDto ordemServicoDto) {
         try {
@@ -100,6 +107,7 @@ public class OrdemDeServicosService {
         ordemDeServicoRepository.save(ordemExistente);
 
         OrdemDeServicoDto dtoAtualizado = mapper.map(ordemExistente, OrdemDeServicoDto.class);
+        dtoAtualizado.getCliente().setNome(ordemExistente.getCliente().getNome());
 
         return ResponseEntity.status(HttpStatus.OK).body(dtoAtualizado);
     }
@@ -110,7 +118,7 @@ public class OrdemDeServicosService {
                                                        String placa,
                                                        Pageable pageable) {
 
-        Specification<OrdemDeServico> placaSpec = SpecificationTemplate.ConsultaOrdensPlaca(placa);
+        Specification<OrdemDeServico> placaSpec = SpecificationTemplate.ConsultarOrdensPorPlaca(placa);
         Specification<OrdemDeServico> combinedSpec = Specification.where(spec).and(placaSpec);
 
         Page<OrdemDeServico> search = ordemDeServicoRepository.findAll(combinedSpec, pageable);
@@ -119,27 +127,9 @@ public class OrdemDeServicosService {
             throw new ObjetoNaoEncontradoException(String.format("Placa: %s, não localizada", placa));
         }
 
+
         return search.map(ordemServico -> mapper.map(ordemServico, OrdemDeServicoDto.class));
     }
-
-
-    /*
-    Modo direto de aplicar o Spec, sem precisar de template.
-     */
-
-//    public Page<OrdemDeServicoDto> todasOrdensPorPlaca(String placa, Pageable pageable) {
-//
-//        Specification<OrdemDeServico> spec = (root, query, builder) ->
-//                builder.like(builder.lower(root.get("carro").get("placa")), "%" + placa.toLowerCase() + "%");
-//
-//        Page<OrdemDeServico> search = ordemDeServicoRepository.findAll(spec, pageable);
-//
-//        if (search.isEmpty()) {
-//            throw new ObjetoNaoEncontradoException(String.format("Placa: %s, não localizada", placa));
-//        }
-//
-//        return search.map(ordemServico -> mapper.map(ordemServico, OrdemDeServicoDto.class));
-//    }
 
 
 

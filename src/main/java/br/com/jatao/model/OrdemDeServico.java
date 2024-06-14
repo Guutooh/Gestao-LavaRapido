@@ -25,7 +25,7 @@ public class OrdemDeServico implements Serializable {
     @CreationTimestamp
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     @Column(nullable = false)
-    private LocalDateTime data;
+    private LocalDateTime dataDaOrdem;
 
     @OneToOne
     private Veiculo carro;

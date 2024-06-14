@@ -81,7 +81,7 @@ public class ClienteController {
     public ResponseEntity<Page<ClienteDto>> consultarNomeCliente(
             @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable paginacao,
             @PathVariable String nome) {
-        return ResponseEntity.status(HttpStatus.OK).body(service.consultarNome( nome, paginacao));
+        return ResponseEntity.status(HttpStatus.OK).body(service.consultarNome(nome, paginacao));
     }
 
     @Operation(
@@ -103,10 +103,10 @@ public class ClienteController {
     })
 
     @GetMapping("/listar")
-    public ResponseEntity<Page<ClienteDto>> listarClientes(SpecificationTemplate.ClienteSpec spec,
-                                                           @PageableDefault(page = 0, size = 10, sort = "id",
+    public ResponseEntity<Page<ClienteDto>> listarTodosClientes(SpecificationTemplate.ClienteSpec spec,
+                                                                @PageableDefault(page = 0, size = 10, sort = "id",
                                                                    direction = Sort.Direction.ASC) Pageable paginacao) {
-        return ResponseEntity.status(HttpStatus.OK).body(service.listarClientes(spec,paginacao));
+        return ResponseEntity.status(HttpStatus.OK).body(service.listarClientes(spec, paginacao));
     }
 
 

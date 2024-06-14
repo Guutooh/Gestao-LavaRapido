@@ -4,13 +4,19 @@ import br.com.jatao.dto.OrdemDeServicoDto;
 import br.com.jatao.dto.ServicoDto;
 import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.exception.OrdemNaoCriadaException;
+import br.com.jatao.model.Cliente;
 import br.com.jatao.model.Servico;
 import br.com.jatao.repository.ServicoRepository;
+import br.com.jatao.specifications.SpecificationTemplate;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,21 +38,21 @@ public class ServicoService {
         }
     }
 
-    public List<ServicoDto> todosServicos() {
+    public Page<ServicoDto> listarServicos(SpecificationTemplate.ServicoSpec spec, Pageable pageable) {
 
-        try {
+        Page<Servico> servicos = servicoRepository.findAll(spec, pageable);
 
-            List<Servico> servicos = servicoRepository.findAll();
-
-            return servicos.stream()
-                    .map(servico -> mapper.map(servico, ServicoDto.class))
-                    .collect(Collectors.toList());
-
-        } catch (ObjetoNaoEncontradoException e) {
-
-            throw new ObjetoNaoEncontradoException("Não foi encontrados serviços: " + e.getMessage());
+        if (servicos.isEmpty()) {
+            throw new ObjetoNaoEncontradoException("Nenhum serviço encontrado.");
         }
+
+        List<ServicoDto> servicoDtos = servicos.stream()
+                .map(servico -> mapper.map(servico, ServicoDto.class))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(servicoDtos, pageable, servicos.getTotalElements());
     }
+
 
     public void excluirServico(Long id) {
         try {
