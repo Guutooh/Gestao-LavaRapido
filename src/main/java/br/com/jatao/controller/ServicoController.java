@@ -88,7 +88,7 @@ public class ServicoController {
     })
     @GetMapping()
     public ResponseEntity<Page<ServicoDto>> listarTodosServicos(SpecificationTemplate.ServicoSpec spec,
-                                                                @PageableDefault(page = 0, size = 10, sort = "id",
+                                                                @PageableDefault(sort = "id",
                                                                         direction = Sort.Direction.ASC) Pageable paginacao) {
 
         return ResponseEntity.status(HttpStatus.OK).body(service.listarServicos(spec, paginacao));
