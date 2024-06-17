@@ -11,12 +11,17 @@ public class ModalMapperConfig {
 
         ModelMapper modelMapper = new ModelMapper();
 
-        // Configurar o ModelMapper para ignorar campos nulos
-        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        // Configurar o ModelMapper para ignorar campos nulos e habilitar matching de campos
+        modelMapper.getConfiguration()
+                .setSkipNullEnabled(true)
+                .setFieldMatchingEnabled(true)
+                .setCollectionsMergeEnabled(true)
+                .setDeepCopyEnabled(true);
+
+        // Configuração recursiva
+        modelMapper.getConfiguration()
+                .setPropertyCondition(context -> context.getSource() != null);
 
         return modelMapper;
     }
-
-
-
 }

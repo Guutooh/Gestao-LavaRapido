@@ -1,10 +1,8 @@
 package br.com.jatao.model;
 
+import br.com.jatao.dto.EnderecoDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,8 +12,6 @@ import java.io.Serializable;
 
 @Entity
 @Data
-@Getter
-@Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Cliente implements Serializable {
 
@@ -30,26 +26,7 @@ public class Cliente implements Serializable {
 
     private String celular;
 
-//    private String email;
-//
-//    private String cpf;
-//
-//    private String pais = "Brasil";
-//
-//    private boolean statusCadastro = true;
-//
-//    /*
-//    Montar classe de endereço e mudar para EBBEDABLE
-//     */
-//
-//    private String endereco; // MUDAR PARA EBBEDABLE
-//
-//    private String cidade;
-//
-//    private String estado;
-//
-//    private String cep; // montar API
-
-
+    @Embedded
+    private Endereco endereco;
 
 }

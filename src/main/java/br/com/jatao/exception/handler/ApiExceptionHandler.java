@@ -125,7 +125,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
         ProblemType problemType = ProblemType.DADOS_INVALIDOS;
+
         String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
 
         BindingResult bindingResult = ex.getBindingResult();
@@ -144,7 +146,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return handleExceptionInternal(ex, problem, headers, status, request);
     }
-
 
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {

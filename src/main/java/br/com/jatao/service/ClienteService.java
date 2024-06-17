@@ -1,8 +1,11 @@
 package br.com.jatao.service;
 
+import br.com.jatao.client.ViacepClient;
 import br.com.jatao.dto.ClienteDto;
+import br.com.jatao.dto.EnderecoDto;
 import br.com.jatao.exception.ObjetoNaoEncontradoException;
 import br.com.jatao.model.Cliente;
+import br.com.jatao.model.Endereco;
 import br.com.jatao.repository.ClienteRepository;
 import br.com.jatao.specifications.SpecificationTemplate;
 import lombok.AllArgsConstructor;
@@ -25,17 +28,29 @@ public class ClienteService {
 
     private ClienteRepository clienteRepository;
 
+    private ViacepClient viacepClient;
 
     public ClienteDto cadastrarCliente(ClienteDto clienteDto) {
 
+
+        // Chamada ao serviço ViaCEP
+        var viaCep = viacepClient.getEndereco(clienteDto.getEnderecoDto().getCep());
+
         Cliente cliente = mapper.map(clienteDto, Cliente.class);
 
-        // Verificar e salvar carro se necessário
-        clienteRepository.save(cliente);
+        Endereco endereco = cliente.getEndereco();
+        endereco.setRua(viaCep.getLogradouro());
+        endereco.setBairro(viaCep.getBairro());
+        endereco.setCidade(viaCep.getLocalidade());
+        endereco.setUf(viaCep.getUf());
 
-        // Mapear ordemModel de volta para ordemDto
-        return mapper.map(cliente, ClienteDto.class);
+        Cliente clienteSalvo = clienteRepository.save(cliente);
 
+        EnderecoDto enderecoDtoSalvo = mapper.map(clienteSalvo.getEndereco(), EnderecoDto.class);
+
+        clienteDto.setEnderecoDto(enderecoDtoSalvo);
+
+        return mapper.map(clienteDto, ClienteDto.class);
     }
 
     public Page<ClienteDto> listarClientes(SpecificationTemplate.ClienteSpec spec, Pageable pageable) {

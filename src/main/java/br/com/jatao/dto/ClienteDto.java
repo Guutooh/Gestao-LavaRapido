@@ -2,7 +2,6 @@ package br.com.jatao.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nullable;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -25,4 +24,6 @@ public class ClienteDto implements Serializable {
     @Pattern(regexp = "^\\d{11}$", message = "O celular deve conter 11 dígitos")
     @Nullable
     private String celular;
+
+    private EnderecoDto enderecoDto;
 }
